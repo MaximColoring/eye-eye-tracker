@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "compiled",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es5",
+    "allowSyntheticDefaultImports": true,
+    "noEmitHelpers": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "downlevelIteration": true,
+    "types": ["node"],
+    "lib": ["esnext"],
+    "baseUrl": "./",
+    "paths": {
+      "*": ["src/@types/*", "*"]
+    }
+  },
+  "allowJS": true,
+  "include": ["**/*.d.ts", "**/*.tsx", "**/*.ts"],
+  "exclude": ["node_modules/**", "functions/node_modules/**", "scripts"]
+}

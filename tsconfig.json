@@ -12,7 +12,7 @@
     "noUnusedParameters": true,
     "strictNullChecks": true,
     "downlevelIteration": true,
-    "types": ["node"],
+    "types": ["jest", "node"],
     "lib": ["esnext"],
     "baseUrl": "./",
     "paths": {

@@ -9,11 +9,12 @@
     "allowSyntheticDefaultImports": true,
     "noEmitHelpers": false,
     "noUnusedLocals": true,
+    "resolveJsonModule": true,
     "noUnusedParameters": true,
     "strictNullChecks": true,
     "downlevelIteration": true,
     "types": ["jest", "node"],
-    "lib": ["esnext"],
+    "lib": ["dom", "esnext"],
     "baseUrl": "./",
     "paths": {
       "*": ["src/@types/*", "*"]

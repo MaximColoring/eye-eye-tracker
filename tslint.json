@@ -13,7 +13,7 @@
       "no-reference": true,
       "no-internal-module": true,
       "no-arg": true,
-      "no-bitwise": true,
+      "no-bitwise": false,
       "no-conditional-assignment": true,
       "no-construct": true,
       "no-debugger": true,

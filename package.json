@@ -64,12 +64,6 @@
       "node"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run lint && npm test"
-    }
-  },
   "lint-staged": {
     "*.ts": [
       "tslint -c tslint.json --fix",

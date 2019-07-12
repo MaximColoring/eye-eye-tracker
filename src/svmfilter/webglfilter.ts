@@ -417,8 +417,8 @@ export const webglFilter = () => {
         drawLayerBuffer = gl.createBuffer()
     }
 
-    const getRawResponses = (patches: number[][]) => {
-        if (!gl || !patchResponseProgram) return
+    const getRawResponses = (patches: number[][]): number[][] => {
+        if (!gl || !patchResponseProgram) return []
 
         insertPatches(patches)
 
@@ -461,9 +461,9 @@ export const webglFilter = () => {
         return responses
     }
 
-    const getSobelResponses = (patches: number[][]) => {
+    const getSobelResponses = (patches: number[][]): number[][] => {
         // check that it is initialized
-        if (!sobelInit || !gl || !gradientResponseProgram || !patchResponseProgram) return
+        if (!sobelInit || !gl || !gradientResponseProgram || !patchResponseProgram) return []
 
         insertPatches(patches)
 
@@ -530,9 +530,9 @@ export const webglFilter = () => {
         return responses
     }
 
-    const getLBPResponses = (patches: number[][]) => {
+    const getLBPResponses = (patches: number[][]): number[][] => {
         // check that it is initialized
-        if (!lbpInit || !gl || !lbpResponseProgram || !patchResponseProgram) return
+        if (!lbpInit || !gl || !lbpResponseProgram || !patchResponseProgram) return []
 
         insertPatches(patches)
 
@@ -680,8 +680,8 @@ export const webglFilter = () => {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
     }
 
-    const drawOut = (type: keyof FiltersTypes) => {
-        if (!patchDrawProgram) return
+    const drawOut = (type: keyof FiltersTypes): number[][] => {
+        if (!patchDrawProgram) return []
         // switch programs
         gl.useProgram(patchDrawProgram)
 

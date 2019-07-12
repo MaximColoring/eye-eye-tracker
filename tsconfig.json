@@ -13,14 +13,31 @@
     "noUnusedParameters": true,
     "strictNullChecks": true,
     "downlevelIteration": true,
-    "types": ["jest", "node"],
-    "lib": ["dom", "esnext"],
+    "types": [
+      "jest",
+      "node"
+    ],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "baseUrl": "./",
     "paths": {
-      "*": ["src/@types/*", "*"]
+      "*": [
+        "src/@types/*",
+        "*"
+      ]
     }
   },
   "allowJS": true,
-  "include": ["**/*.d.ts", "**/*.tsx", "**/*.ts"],
-  "exclude": ["node_modules/**", "functions/node_modules/**", "scripts"]
+  "include": [
+    "**/*.d.ts",
+    "**/*.tsx",
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules/**",
+    "functions/node_modules/**",
+    "scripts"
+  ]
 }

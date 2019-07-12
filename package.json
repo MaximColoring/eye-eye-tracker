@@ -1,8 +1,9 @@
 {
-  "name": "clmtrackr",
+  "name": "eye-eye-tracker",
   "version": "1.2.0",
   "description": "Javascript library for precise tracking of facial features via Constrained Local Models",
-  "main": "build/index.js",
+  "main": "build/tracker.cjs.development.js",
+  "module": "build/tracker.esm.development.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/mikolajspeichert/clmtrackr.git"
@@ -22,7 +23,6 @@
   "dependencies": {
     "jsfeat": "git+https://github.com/inspirit/jsfeat",
     "mosse": "^0.1.1",
-    "numeric": "^1.2.6",
     "prettier": "^1.18.2",
     "raf": "^3.4.1"
   },
@@ -44,7 +44,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-size-snapshot": "^0.9.0",
-    "rollup-plugin-uglify": "^6.0.2",
+    "rollup-plugin-terser": "^5.1.1",
     "rollup-plugin-visualizer": "^2.4.3"
   },
   "jest": {

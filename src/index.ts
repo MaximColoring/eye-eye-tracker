@@ -2,7 +2,7 @@ import { Model, pca_20_svm } from "./models"
 import numeric from "./utils/numeric"
 import { webglFilter } from "./svmfilter/webglfilter"
 import { FaceDetector, faceDetector } from "./facedetector/faceDetection"
-import { createJacobian, gpopt, gpopt2 } from "./utils"
+import { createJacobian, gpopt, gpopt2 } from "./util"
 
 const WIDTH = 0
 const HEIGHT = 1

@@ -5,6 +5,8 @@
     "noImplicitAny": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "declaration": true,
+    "declarationDir": "build",
     "target": "es5",
     "allowSyntheticDefaultImports": true,
     "noEmitHelpers": false,

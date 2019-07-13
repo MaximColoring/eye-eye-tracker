@@ -50,7 +50,7 @@ export const Tracker = ({
     let _initialized = false
     let detector: FaceDetector
     let model: Model
-    let runnerElement: HTMLVideoElement
+    let runnerElement: HTMLCanvasElement
     let runnerBox: number[] | undefined
     let runnerTimeout: number
     let detecting: boolean = false
@@ -330,7 +330,7 @@ export const Tracker = ({
         return msavg
     }
 
-    const start = (element: HTMLVideoElement, box?: number[]) => {
+    const start = (element: HTMLCanvasElement, box?: number[]) => {
         // check if model is initalized, else return false
         if (!model) {
             console.log("tracker needs to be initalized before starting to track.")
@@ -485,10 +485,12 @@ export const Tracker = ({
             facecheck_count += 1
 
             // calculate where to get patches via constant velocity prediction
-            for (let i = 0; i < currentParameters.length; i++) {
-                currentParameters[i] =
-                    relaxation * prevParameters[1][i] +
-                    (1 - relaxation) * (2 * prevParameters[1][i] - prevParameters[0][i])
+            if (prevParameters.length >= 2) {
+                for (let i = 0; i < currentParameters.length; i++) {
+                    currentParameters[i] =
+                        relaxation * prevParameters[1][i] +
+                        (1 - relaxation) * (2 * prevParameters[1][i] - prevParameters[0][i])
+                }
             }
 
             // change translation, rotation and scale parameters

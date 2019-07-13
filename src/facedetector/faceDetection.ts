@@ -18,7 +18,7 @@ type FaceDetectionParams = {
 export type FaceDetector = ReturnType<typeof faceDetector>
 
 export const faceDetector = (model: Model, params: FaceDetectionParams) => {
-    let element: HTMLVideoElement
+    let element: HTMLCanvasElement
 
     let mossef_lefteye: any
     let mossef_righteye: any
@@ -62,7 +62,7 @@ export const faceDetector = (model: Model, params: FaceDetectionParams) => {
 
     const jf = jsfeat_face(params)
 
-    const init = (video: HTMLVideoElement) => {
+    const init = (video: HTMLCanvasElement) => {
         element = video
 
         jf.init(element)
@@ -262,7 +262,7 @@ const jsfeat_face = ({
     let videoWidth: number
     let videoHeight: number
     let scale: number
-    let video: HTMLVideoElement
+    let video: HTMLCanvasElement
     let w: number
     let h: number
     let img_u8: Int32Array
@@ -273,7 +273,7 @@ const jsfeat_face = ({
     let ii_canny: Int32Array
     let classifier: any
 
-    const init = (element: HTMLVideoElement) => {
+    const init = (element: HTMLCanvasElement) => {
         video = element
         videoWidth = video.width
         videoHeight = video.height

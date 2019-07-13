@@ -13770,10 +13770,12 @@ var Tracker = function (_a) {
         else {
             facecheck_count += 1;
             // calculate where to get patches via constant velocity prediction
-            for (var i = 0; i < currentParameters.length; i++) {
-                currentParameters[i] =
-                    relaxation * prevParameters[1][i] +
-                        (1 - relaxation) * (2 * prevParameters[1][i] - prevParameters[0][i]);
+            if (prevParameters.length >= 2) {
+                for (var i = 0; i < currentParameters.length; i++) {
+                    currentParameters[i] =
+                        relaxation * prevParameters[1][i] +
+                            (1 - relaxation) * (2 * prevParameters[1][i] - prevParameters[0][i]);
+                }
             }
             // change translation, rotation and scale parameters
             rotation = Math.PI / 2 - Math.atan((currentParameters[0] + 1) / currentParameters[1]);

@@ -13447,7 +13447,7 @@ var Tracker = function (_a) {
     var scoringContext;
     var scoringWeights;
     var scoringBias;
-    var scoringHistory;
+    var scoringHistory = [];
     var filter;
     var msMeta = {
         x: {

@@ -91,7 +91,7 @@ export const Tracker = ({
     let scoringContext: CanvasRenderingContext2D
     let scoringWeights: Float64Array
     let scoringBias: number
-    let scoringHistory: number[]
+    let scoringHistory: number[] = []
 
     let filter: ReturnType<typeof webglFilter>
 

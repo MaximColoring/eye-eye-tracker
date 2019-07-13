@@ -51,7 +51,7 @@ export const Tracker = ({
     let detector: FaceDetector
     let model: Model
     let runnerElement: HTMLVideoElement
-    let runnerBox: number[]
+    let runnerBox: number[] | undefined
     let runnerTimeout: number
     let detecting: boolean = false
     let first: boolean = true
@@ -330,7 +330,7 @@ export const Tracker = ({
         return msavg
     }
 
-    const start = (element: HTMLVideoElement, box: number[]) => {
+    const start = (element: HTMLVideoElement, box?: number[]) => {
         // check if model is initalized, else return false
         if (!model) {
             console.log("tracker needs to be initalized before starting to track.")
@@ -441,7 +441,7 @@ export const Tracker = ({
         }
     }
 
-    const track = (element: CanvasImageSource, box: number[]) => {
+    const track = (element: CanvasImageSource, box?: number[]) => {
         let scaling: number
         let translateX: number
         let translateY: number

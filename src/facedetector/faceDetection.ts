@@ -148,7 +148,7 @@ export const faceDetector = (model: Model, params: FaceDetectionParams) => {
     }
 
     // get initial starting point for model
-    const getInitialPosition = (box: number[]) =>
+    const getInitialPosition = (box?: number[]) =>
         new Promise<number[]>((resolve, reject) => {
             getBoundingBox(box)
                 .then(getFinegrainedPosition)

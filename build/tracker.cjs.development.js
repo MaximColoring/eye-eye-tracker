@@ -13958,6 +13958,7 @@ var Tracker = function (_a) {
     return {
         init: init,
         start: start,
+        track: track,
         stop: stop,
         getCurrentPosition: getCurrentPosition
     };

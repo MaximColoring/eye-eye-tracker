@@ -708,6 +708,7 @@ export const Tracker = ({
     return {
         init,
         start,
+        track,
         stop,
         getCurrentPosition
     }

@@ -1,6 +1,6 @@
 {
   "name": "eye-eye-tracker",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Javascript library for precise tracking of facial features via Constrained Local Models",
   "main": "build/index.js",
   "module": "build/tracker.esm.development.js",

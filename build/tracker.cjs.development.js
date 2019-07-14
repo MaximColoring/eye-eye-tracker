@@ -13735,6 +13735,9 @@ var Tracker = function (_a) {
             return getWebGLResponsesType(responseList[0]);
         }
     };
+    var setupDetector = function (e) {
+        detector.init(e);
+    };
     var track = function (element, box) {
         var e_1, _a;
         var scaling;
@@ -13960,6 +13963,7 @@ var Tracker = function (_a) {
         start: start,
         track: track,
         stop: stop,
+        setupDetector: setupDetector,
         getCurrentPosition: getCurrentPosition
     };
 };

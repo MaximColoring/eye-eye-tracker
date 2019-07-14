@@ -441,6 +441,10 @@ export const Tracker = ({
         }
     }
 
+    const setupDetector = (e: CanvasImageSource) => {
+        detector.init(e as HTMLCanvasElement)
+    }
+
     const track = (element: CanvasImageSource, box?: number[]) => {
         let scaling: number
         let translateX: number
@@ -710,6 +714,7 @@ export const Tracker = ({
         start,
         track,
         stop,
+        setupDetector,
         getCurrentPosition
     }
 }

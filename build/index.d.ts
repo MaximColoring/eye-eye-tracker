@@ -61,7 +61,7 @@ type TrackerParams = {
 export const Tracker: ({ searchWindow, scoreThreshold, stopOnConvergence, sharpenResponse, maxIterationsPerAnimFrame, weightPoints }: TrackerParams) => {
   init: (pmodel?: Model) => void;
   start: (element: HTMLCanvasElement, box?: number[]) => false | undefined;
-  track: () => (element: CanvasImageSource, box?: number[]) => false | number[][];
+  track: (element: CanvasImageSource, box?: number[]) => false | number[][];
   stop: () => void;
   getCurrentPosition: () => false | number[][];
 };

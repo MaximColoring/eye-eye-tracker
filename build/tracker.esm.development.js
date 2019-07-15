@@ -13747,6 +13747,7 @@ var Tracker = function (_a) {
                 var initialPos = detector.getInitialPosition(box);
                 if (!initialPos) {
                     console.error("couldnt get initial face position");
+                    detecting = false;
                     return false;
                 }
                 scaling = initialPos[0];

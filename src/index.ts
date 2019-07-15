@@ -462,6 +462,7 @@ export const Tracker = ({
                 const initialPos = detector.getInitialPosition(box)
                 if (!initialPos) {
                     console.error("couldnt get initial face position")
+                    detecting = false
                     return false
                 }
 

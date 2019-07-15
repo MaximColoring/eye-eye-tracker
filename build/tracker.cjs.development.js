@@ -12989,7 +12989,7 @@ var faceDetector = function (model, params) {
         jf.init(element);
     };
     var getBoundingBox = function (box) {
-        return Promise.resolve(box ? { x: box[0], y: box[1], width: box[2], height: box[3] } : jf.findFace());
+        return box ? { x: box[0], y: box[1], width: box[2], height: box[3] } : jf.findFace();
     };
     var getFinegrainedPosition = function (candidate) {
         var translateX;
@@ -13038,12 +13038,11 @@ var faceDetector = function (model, params) {
     };
     // get initial starting point for model
     var getInitialPosition = function (box) {
-        return new Promise(function (resolve, reject) {
-            getBoundingBox(box)
-                .then(getFinegrainedPosition)
-                .then(resolve)
-                .catch(reject);
-        });
+        var bBox = getBoundingBox(box);
+        if (!bBox)
+            return false;
+        var fPos = getFinegrainedPosition(bBox);
+        return fPos;
     };
     // procrustes analysis
     var procrustes = function (template, shape) {
@@ -13229,50 +13228,48 @@ var jsfeat_face = function (_a) {
     var findFace = function () {
         work_ctx.drawImage(video, 0, 0, work_canvas.width, work_canvas.height);
         var imageData = work_ctx.getImageData(0, 0, work_canvas.width, work_canvas.height);
-        return new Promise(function (resolve, reject) {
-            jsfeat_1.imgproc.grayscale(imageData.data, work_canvas.width, work_canvas.height, img_u8);
-            // possible params
-            if (equalizeHistogram) {
-                jsfeat_1.imgproc.equalize_histogram(img_u8, img_u8);
+        jsfeat_1.imgproc.grayscale(imageData.data, work_canvas.width, work_canvas.height, img_u8);
+        // possible params
+        if (equalizeHistogram) {
+            jsfeat_1.imgproc.equalize_histogram(img_u8, img_u8);
+        }
+        // jsfeat.imgproc.gaussian_blur(img_u8, img_u8, 3);
+        jsfeat_1.imgproc.compute_integral_image(img_u8, ii_sum, ii_sqsum, classifier.tilted ? ii_tilted : null);
+        if (useCanny) {
+            jsfeat_1.imgproc.canny(img_u8, edg, 10, 50);
+            jsfeat_1.imgproc.compute_integral_image(edg, ii_canny, null, null);
+        }
+        jsfeat_1.haar.edgesDensity = edgesDensity;
+        var rects = jsfeat_1.haar.detect_multi_scale(ii_sum, ii_sqsum, ii_tilted, useCanny ? ii_canny : null, img_u8.cols, img_u8.rows, classifier, scaleFactor, minScale);
+        rects = jsfeat_1.haar.group_rectangles(rects, min_neighbors);
+        for (var i = rects.length - 1; i >= 0; i--) {
+            if (rects[i].confidence < confidenceThreshold) {
+                rects.splice(i, 1);
             }
-            // jsfeat.imgproc.gaussian_blur(img_u8, img_u8, 3);
-            jsfeat_1.imgproc.compute_integral_image(img_u8, ii_sum, ii_sqsum, classifier.tilted ? ii_tilted : null);
-            if (useCanny) {
-                jsfeat_1.imgproc.canny(img_u8, edg, 10, 50);
-                jsfeat_1.imgproc.compute_integral_image(edg, ii_canny, null, null);
-            }
-            jsfeat_1.haar.edgesDensity = edgesDensity;
-            var rects = jsfeat_1.haar.detect_multi_scale(ii_sum, ii_sqsum, ii_tilted, useCanny ? ii_canny : null, img_u8.cols, img_u8.rows, classifier, scaleFactor, minScale);
-            rects = jsfeat_1.haar.group_rectangles(rects, min_neighbors);
-            for (var i = rects.length - 1; i >= 0; i--) {
-                if (rects[i].confidence < confidenceThreshold) {
-                    rects.splice(i, 1);
+        }
+        var rl = rects.length;
+        if (rl === 0) {
+            return;
+        }
+        else {
+            var best = rects[0];
+            for (var i = 1; i < rl; i++) {
+                if (rects[i].neighbors > best.neighbors) {
+                    best = rects[i];
+                }
+                else if (rects[i].neighbors === best.neighbors) {
+                    // if (rects[i].width > best.width) best = rects[i]; // use biggest rect
+                    if (rects[i].confidence > best.confidence)
+                        best = rects[i]; // use most confident rect
                 }
             }
-            var rl = rects.length;
-            if (rl === 0) {
-                reject();
-            }
-            else {
-                var best = rects[0];
-                for (var i = 1; i < rl; i++) {
-                    if (rects[i].neighbors > best.neighbors) {
-                        best = rects[i];
-                    }
-                    else if (rects[i].neighbors === best.neighbors) {
-                        // if (rects[i].width > best.width) best = rects[i]; // use biggest rect
-                        if (rects[i].confidence > best.confidence)
-                            best = rects[i]; // use most confident rect
-                    }
-                }
-                var sc = videoWidth / img_u8.cols;
-                best.x = (best.x * sc) | 0;
-                best.y = (best.y * sc) | 0;
-                best.width = (best.width * sc) | 0;
-                best.height = (best.height * sc) | 0;
-                resolve(best);
-            }
-        });
+            var sc = videoWidth / img_u8.cols;
+            best.x = (best.x * sc) | 0;
+            best.y = (best.y * sc) | 0;
+            best.width = (best.width * sc) | 0;
+            best.height = (best.height * sc) | 0;
+            return best;
+        }
     };
     return { findFace: findFace, init: init };
 };
@@ -13751,26 +13748,22 @@ var Tracker = function (_a) {
             if (!detecting) {
                 detecting = true;
                 // this returns a Promise
-                detector
-                    .getInitialPosition(box)
-                    .then(function (result) {
-                    scaling = result[0];
-                    rotation = result[1];
-                    translateX = result[2];
-                    translateY = result[3];
-                    currentParameters[0] = scaling * Math.cos(rotation) - 1;
-                    currentParameters[1] = scaling * Math.sin(rotation);
-                    currentParameters[2] = translateX;
-                    currentParameters[3] = translateY;
-                    currentPositions = calculatePositions(currentParameters, true);
-                    first = false;
-                })
-                    .catch(function (e) {
-                    console.error("error in track", e);
-                })
-                    .finally(function () {
-                    detecting = false;
-                });
+                var initialPos = detector.getInitialPosition(box);
+                if (!initialPos) {
+                    console.error("couldnt get initial face position");
+                    return false;
+                }
+                scaling = initialPos[0];
+                rotation = initialPos[1];
+                translateX = initialPos[2];
+                translateY = initialPos[3];
+                currentParameters[0] = scaling * Math.cos(rotation) - 1;
+                currentParameters[1] = scaling * Math.sin(rotation);
+                currentParameters[2] = translateX;
+                currentParameters[3] = translateY;
+                currentPositions = calculatePositions(currentParameters, true);
+                first = false;
+                detecting = false;
             }
             return false;
         }

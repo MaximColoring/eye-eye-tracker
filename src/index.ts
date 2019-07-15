@@ -459,29 +459,26 @@ export const Tracker = ({
                 detecting = true
 
                 // this returns a Promise
-                detector
-                    .getInitialPosition(box)
-                    .then(result => {
-                        scaling = result[0]
-                        rotation = result[1]
-                        translateX = result[2]
-                        translateY = result[3]
+                const initialPos = detector.getInitialPosition(box)
+                if (!initialPos) {
+                    console.error("couldnt get initial face position")
+                    return false
+                }
 
-                        currentParameters[0] = scaling * Math.cos(rotation) - 1
-                        currentParameters[1] = scaling * Math.sin(rotation)
-                        currentParameters[2] = translateX
-                        currentParameters[3] = translateY
+                scaling = initialPos[0]
+                rotation = initialPos[1]
+                translateX = initialPos[2]
+                translateY = initialPos[3]
 
-                        currentPositions = calculatePositions(currentParameters, true)
+                currentParameters[0] = scaling * Math.cos(rotation) - 1
+                currentParameters[1] = scaling * Math.sin(rotation)
+                currentParameters[2] = translateX
+                currentParameters[3] = translateY
 
-                        first = false
-                    })
-                    .catch(e => {
-                        console.error("error in track", e)
-                    })
-                    .finally(() => {
-                        detecting = false
-                    })
+                currentPositions = calculatePositions(currentParameters, true)
+
+                first = false
+                detecting = false
             }
 
             return false

@@ -69,7 +69,7 @@ export const faceDetector = (model: Model, params: FaceDetectionParams) => {
     }
 
     const getBoundingBox = (box?: number[]) =>
-        Promise.resolve(box ? { x: box[0], y: box[1], width: box[2], height: box[3] } : jf.findFace()) as Promise<Box>
+        box ? { x: box[0], y: box[1], width: box[2], height: box[3] } : jf.findFace()
 
     const getFinegrainedPosition = (candidate: Box) => {
         let translateX
@@ -148,13 +148,12 @@ export const faceDetector = (model: Model, params: FaceDetectionParams) => {
     }
 
     // get initial starting point for model
-    const getInitialPosition = (box?: number[]) =>
-        new Promise<number[]>((resolve, reject) => {
-            getBoundingBox(box)
-                .then(getFinegrainedPosition)
-                .then(resolve)
-                .catch(reject)
-        })
+    const getInitialPosition = (box?: number[]) => {
+        const bBox = getBoundingBox(box)
+        if (!bBox) return false
+        const fPos = getFinegrainedPosition(bBox)
+        return fPos
+    }
 
     // procrustes analysis
     const procrustes = (template: number[][], shape: number[][]) => {
@@ -299,65 +298,63 @@ const jsfeat_face = ({
         work_ctx.drawImage(video, 0, 0, work_canvas.width, work_canvas.height)
         const imageData = work_ctx.getImageData(0, 0, work_canvas.width, work_canvas.height)
 
-        return new Promise((resolve, reject) => {
-            jsfeat.imgproc.grayscale(imageData.data, work_canvas.width, work_canvas.height, img_u8)
+        jsfeat.imgproc.grayscale(imageData.data, work_canvas.width, work_canvas.height, img_u8)
 
-            // possible params
-            if (equalizeHistogram) {
-                jsfeat.imgproc.equalize_histogram(img_u8, img_u8)
+        // possible params
+        if (equalizeHistogram) {
+            jsfeat.imgproc.equalize_histogram(img_u8, img_u8)
+        }
+        // jsfeat.imgproc.gaussian_blur(img_u8, img_u8, 3);
+
+        jsfeat.imgproc.compute_integral_image(img_u8, ii_sum, ii_sqsum, classifier.tilted ? ii_tilted : null)
+
+        if (useCanny) {
+            jsfeat.imgproc.canny(img_u8, edg, 10, 50)
+            jsfeat.imgproc.compute_integral_image(edg, ii_canny, null, null)
+        }
+
+        jsfeat.haar.edgesDensity = edgesDensity
+        let rects = jsfeat.haar.detect_multi_scale(
+            ii_sum,
+            ii_sqsum,
+            ii_tilted,
+            useCanny ? ii_canny : null,
+            (img_u8 as any).cols,
+            (img_u8 as any).rows,
+            classifier,
+            scaleFactor,
+            minScale
+        )
+        rects = jsfeat.haar.group_rectangles(rects, min_neighbors)
+
+        for (let i = rects.length - 1; i >= 0; i--) {
+            if (rects[i].confidence < confidenceThreshold!) {
+                rects.splice(i, 1)
             }
-            // jsfeat.imgproc.gaussian_blur(img_u8, img_u8, 3);
+        }
 
-            jsfeat.imgproc.compute_integral_image(img_u8, ii_sum, ii_sqsum, classifier.tilted ? ii_tilted : null)
-
-            if (useCanny) {
-                jsfeat.imgproc.canny(img_u8, edg, 10, 50)
-                jsfeat.imgproc.compute_integral_image(edg, ii_canny, null, null)
-            }
-
-            jsfeat.haar.edgesDensity = edgesDensity
-            let rects = jsfeat.haar.detect_multi_scale(
-                ii_sum,
-                ii_sqsum,
-                ii_tilted,
-                useCanny ? ii_canny : null,
-                (img_u8 as any).cols,
-                (img_u8 as any).rows,
-                classifier,
-                scaleFactor,
-                minScale
-            )
-            rects = jsfeat.haar.group_rectangles(rects, min_neighbors)
-
-            for (let i = rects.length - 1; i >= 0; i--) {
-                if (rects[i].confidence < confidenceThreshold!) {
-                    rects.splice(i, 1)
+        const rl = rects.length
+        if (rl === 0) {
+            return
+        } else {
+            let best = rects[0]
+            for (let i = 1; i < rl; i++) {
+                if (rects[i].neighbors > best.neighbors) {
+                    best = rects[i]
+                } else if (rects[i].neighbors === best.neighbors) {
+                    // if (rects[i].width > best.width) best = rects[i]; // use biggest rect
+                    if (rects[i].confidence > best.confidence) best = rects[i] // use most confident rect
                 }
             }
 
-            const rl = rects.length
-            if (rl === 0) {
-                reject()
-            } else {
-                let best = rects[0]
-                for (let i = 1; i < rl; i++) {
-                    if (rects[i].neighbors > best.neighbors) {
-                        best = rects[i]
-                    } else if (rects[i].neighbors === best.neighbors) {
-                        // if (rects[i].width > best.width) best = rects[i]; // use biggest rect
-                        if (rects[i].confidence > best.confidence) best = rects[i] // use most confident rect
-                    }
-                }
+            const sc = videoWidth / (img_u8 as any).cols
+            best.x = (best.x * sc) | 0
+            best.y = (best.y * sc) | 0
+            best.width = (best.width * sc) | 0
+            best.height = (best.height * sc) | 0
 
-                const sc = videoWidth / (img_u8 as any).cols
-                best.x = (best.x * sc) | 0
-                best.y = (best.y * sc) | 0
-                best.width = (best.width * sc) | 0
-                best.height = (best.height * sc) | 0
-
-                resolve(best)
-            }
-        })
+            return best as Box
+        }
     }
 
     return { findFace, init }

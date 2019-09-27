@@ -38,5 +38,6 @@ const config = (env, format) => ({
 export default [
   config('development', 'esm'),
   config('development', 'cjs'),
-  // config('production', 'esm'),
+  config('production', 'esm'),
+  config('production', 'cjs'),
 ]

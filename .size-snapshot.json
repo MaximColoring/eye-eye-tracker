@@ -1,0 +1,21 @@
+{
+  "build/tracker.esm.production.js": {
+    "bundled": 1640832,
+    "minified": 1120388,
+    "gzipped": 385574,
+    "treeshaked": {
+      "rollup": {
+        "code": 129058,
+        "import_statements": 0
+      },
+      "webpack": {
+        "code": 1121410
+      }
+    }
+  },
+  "build/tracker.cjs.production.js": {
+    "bundled": 1640918,
+    "minified": 1120464,
+    "gzipped": 385634
+  }
+}

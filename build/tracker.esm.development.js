@@ -6581,7 +6581,6 @@ var webglFilter = function () {
         }
         var dist = max - min;
         if (dist === 0) {
-            // console.log('a patchresponse was monotone, causing normalization to fail. Leaving it unchanged.');
             response = response.fill(1);
         }
         else {
@@ -13746,7 +13745,6 @@ var Tracker = function (_a) {
                 // this returns a Promise
                 var initialPos = detector.getInitialPosition(box);
                 if (!initialPos) {
-                    console.error("couldnt get initial face position");
                     detecting = false;
                     return false;
                 }
@@ -13798,7 +13796,6 @@ var Tracker = function (_a) {
         if (scoringWeights && facecheck_count % 10 === 0) {
             if (!checkTracking()) {
                 resetParameters();
-                console.log("resetting params");
                 return false;
             }
         }

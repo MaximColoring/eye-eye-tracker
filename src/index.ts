@@ -461,7 +461,6 @@ export const Tracker = ({
                 // this returns a Promise
                 const initialPos = detector.getInitialPosition(box)
                 if (!initialPos) {
-                    console.error("couldnt get initial face position")
                     detecting = false
                     return false
                 }
@@ -525,7 +524,6 @@ export const Tracker = ({
         if (scoringWeights && facecheck_count % 10 === 0) {
             if (!checkTracking()) {
                 resetParameters()
-                console.log("resetting params")
                 return false
             }
         }

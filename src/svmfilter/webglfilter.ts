@@ -789,7 +789,6 @@ export const webglFilter = () => {
         const dist = max - min
 
         if (dist === 0) {
-            // console.log('a patchresponse was monotone, causing normalization to fail. Leaving it unchanged.');
             response = response.fill(1)
         } else {
             for (let i = 0; i < msize; i++) {

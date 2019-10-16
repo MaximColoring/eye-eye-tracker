@@ -129,7 +129,7 @@ export const webglFilter = () => {
             premultipliedAlpha: false,
             preserveDrawingBuffer: true,
             antialias: false
-        })!
+        })! as any
 
         if (!gl) return
 

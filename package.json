@@ -6,7 +6,7 @@
   "module": "build/tracker.esm.development.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mikolajspeichert/clmtrackr.git"
+    "url": "https://github.com/mikolajspeichert/eye-eye-tracker.git"
   },
   "scripts": {
     "prebuild": "npm run clean",
